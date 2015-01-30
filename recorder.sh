@@ -1,4 +1,4 @@
-#!/bin/bash - 
+#!/system/bin/sh - 
 #===============================================================================
 #
 #          FILE: recorder.sh
@@ -16,18 +16,18 @@
 #       CREATED: Friday, December 05, 2014 12:24:26 CST CST
 #      REVISION:  ---
 #===============================================================================
-
-file=${1:-"record_stuff.txt"}
+BUSYBOX=/data/busybox
+file=${1:-"record.txt"}
 
 get_touch_device(){
-    adb shell getevent -pl|sed -e ':a;N;$!ba;s/\n / /g'|\
-        grep 'ABS_MT_TOUCH'|awk '{print $4}'|tr -d '\011\012\015'
+    getevent -pl|$BUSYBOX sed -e ':a;N;$!ba;s/\n / /g'|\
+        $BUSYBOX grep 'ABS_MT_TOUCH'|$BUSYBOX awk '{print $4}'|$BUSYBOX tr -d '\011\012\015'
 }
 
-touchdev=$(get_touch_device )
+touchdev=$(get_touch_device)
 echo "touch device is [ $touchdev ]"
 
 echo "--recorder start now, output file is [ $file ]"
 trap "echo  '= recoder had stop ='" SIGINT
-adb shell getevent -t $touchdev >$file
+getevent -t $touchdev >$file
 echo "--recorder start end, output file is [ $file ]"

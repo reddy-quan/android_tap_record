@@ -17,7 +17,7 @@
 #      REVISION:  ---
 #===============================================================================
 BUSYBOX=/data/busybox
-file=${1:-"record.txt"}
+file=${1:-"m.txt"}
 
 get_touch_device(){
     getevent -pl|$BUSYBOX sed -e ':a;N;$!ba;s/\n / /g'|\

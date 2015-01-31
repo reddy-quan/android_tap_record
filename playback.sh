@@ -5,21 +5,22 @@
 # 
 #         USAGE: ./playback.sh 
 # 
-#   DESCRIPTION: 把 ./recorder.sh 录制的内容输出成一个 send.sh 和 send.c 供回放
-#                脚本唯一不好的地方：mindiff=0.1 此值并不代表所有操作的真实场景
-#                详情请看脚本 TODO
+#   DESCRIPTION: 回放
 # 
 #       OPTIONS: ---
 #  REQUIREMENTS: ---
 #          BUGS: ---
 #         NOTES: ---
 #        AUTHOR: lwq (28120), scue@vip.qq.com
+#				 Red Devil 20150131 create for run on android
 #  ORGANIZATION: 
-#       CREATED: Friday, December 05, 2014 12:30:37 CST CST
+#       CREATED: 
 #      REVISION:  ---
 #===============================================================================
-BUSYBOX=/data/busybox
-file=${1:-"record.txt"}                   # origin
+#Need busybox to provide awk/sed...
+BUSYBOX=
+#file=${1:-"record.txt"}    # origin
+file=${1:-"m.txt"}
 
 get_touch_device(){
     getevent -pl|$BUSYBOX sed -e ':a;N;$!ba;s/\n / /g'|\
@@ -32,3 +33,27 @@ touchdev=$(get_touch_device)
 $BUSYBOX sed 's/\[//g;s/ *//;s/\]//g;s/\./ /' $file >$file.format
 
 #$BUSYBOX awk '{print $1}' $file.format | $BUSYBOX awk -F. '{print $1, $2}'
+
+cat $file.format | $BUSYBOX awk 'BEGIN{last_t=0}
+NR==1{OFMT="%.6f";
+last_t=$1"."$2;
+print "#!/system/bin/sh";
+cmd="let num=0x"$3";let num2=0x"$4";let num3=0x"$5";echo sendevent /dev/input/event2 $num $num2 $num3";
+system(cmd);
+}
+NR>1{OFMT="%.6f";now_t=$1"."$2;
+print "sleep",now_t-last_t;last_t=now_t;
+cmd="let num=0x"$3";let num2=0x"$4";let num3=0x"$5";echo sendevent /dev/input/event2 $num $num2 $num3";
+system(cmd);
+}'
+
+# cat $file.format | $BUSYBOX awk 'BEGIN{last_t=0}
+# NR==1{OFMT="%.2f";
+# last_t=$1"."$2;
+# print "sendevent /dev/input/event2 0x"$3" 0x"$4" 0x"$5;
+# }
+# NR>1{OFMT="%.2f";now_t=$1"."$2;
+# print "sleep",now_t-last_t;last_t=now_t;
+# print "sendevent /dev/input/event2 0x"$3" 0x"$4" 0x"$5;
+# }'
+

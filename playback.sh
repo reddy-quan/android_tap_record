@@ -20,6 +20,15 @@
 #===============================================================================
 BUSYBOX=/data/busybox
 file=${1:-"record.txt"}                   # origin
+
+get_touch_device(){
+    getevent -pl|$BUSYBOX sed -e ':a;N;$!ba;s/\n / /g'|\
+        $BUSYBOX grep 'ABS_MT_TOUCH'|$BUSYBOX awk '{print $4}'|$BUSYBOX tr -d '\011\012\015'
+}
+
+touchdev=$(get_touch_device)
+
 #delete [ ' ' ], and replace '.' with ' '
 $BUSYBOX sed 's/\[//g;s/ *//;s/\]//g;s/\./ /' $file >$file.format
+
 #$BUSYBOX awk '{print $1}' $file.format | $BUSYBOX awk -F. '{print $1, $2}'

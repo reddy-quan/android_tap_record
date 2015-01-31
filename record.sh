@@ -1,9 +1,7 @@
 #!/system/bin/sh - 
 #===============================================================================
-#
-#          FILE: recorder.sh
-# 
-#         USAGE: ./recorder.sh 
+#          FILE: record.sh
+#         USAGE: ./record.sh 
 # 
 #   DESCRIPTION: 录制 Android 屏幕事件，保存在 $file 文件上
 # 

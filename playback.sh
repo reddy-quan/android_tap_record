@@ -1,9 +1,9 @@
-#!/system/bin/sh - 
+#!/system/bin/sh
 #===============================================================================
 #
 #          FILE: playback.sh
 # 
-#         USAGE: ./playback.sh 
+#         USAGE: ./playback.sh > play.sh && chmod 777 play.sh && ./play.sh
 # 
 #   DESCRIPTION: 回放
 # 
@@ -47,13 +47,4 @@ cmd="let num=0x"$3";let num2=0x"$4";let num3=0x"$5";echo sendevent /dev/input/ev
 system(cmd);
 }'
 
-# cat $file.format | $BUSYBOX awk 'BEGIN{last_t=0}
-# NR==1{OFMT="%.2f";
-# last_t=$1"."$2;
-# print "sendevent /dev/input/event2 0x"$3" 0x"$4" 0x"$5;
-# }
-# NR>1{OFMT="%.2f";now_t=$1"."$2;
-# print "sleep",now_t-last_t;last_t=now_t;
-# print "sendevent /dev/input/event2 0x"$3" 0x"$4" 0x"$5;
-# }'
 

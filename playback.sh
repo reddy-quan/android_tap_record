@@ -18,9 +18,10 @@
 #       CREATED: 
 #      REVISION:  ---
 #===============================================================================
-#Need busybox to provide awk/sed...
-BUSYBOX=/data/busybox.miui
-#file=${1:-"record.txt"}    # origin
+#Need busybox to provide awk/sed etc
+#BUSYBOX=/data/busybox.miui
+#BUSYBOX=/data/busybox
+BUSYBOX=/mnt/sdcard/busybox
 file=${1:-"m.txt"}
 
 get_touch_device(){
@@ -30,8 +31,9 @@ get_touch_device(){
 
 touchdev=$(get_touch_device)
 
+cat $file | ./busybox dos2unix > $file.unix
 #delete [ ' ' ], and replace '.' with ' '
-$BUSYBOX sed 's/\[//g;s/ *//;s/\]//g;s/\./ /' $file >$file.format
+$BUSYBOX sed 's/\[//g;s/ *//;s/\]//g;s/\./ /' $file.unix >$file.format
 
 cat $file.format | $BUSYBOX awk -v dev=$touchdev 'BEGIN{last_t=0}
 NR==1{OFMT="%.6f";
@@ -47,8 +49,15 @@ print "sleep",delay;
 last_t=now_t;
 cmd="let num=0x"$3";let num2=0x"$4";let num3=0x"$5";echo sendevent "dev" $num $num2 $num3";
 system(cmd);
-}' | $BUSYBOX tee play.sh
+}' >play.sh
+#| $BUSYBOX tee play.sh
 
-chmod 777 play.sh
-echo "OK, now you can run ./play.sh to play back touch event"
+#OK, NO Need to chmod
+#chmod 777 play.sh
+rm $file.format $file.unix 2>/dev/null
+#echo "OK, now you can run ./play.sh to play back touch event"
 
+echo "OK, REPLAYING..."
+./play.sh
+
+rm play.sh

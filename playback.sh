@@ -3,7 +3,8 @@
 #
 #          FILE: playback.sh
 # 
-#         USAGE: ./playback.sh > play.sh && chmod 777 play.sh && ./play.sh
+#         USAGE: ./playback.sh
+#				 Then prepare you phone ready, and run: ./play.sh
 # 
 #   DESCRIPTION: 回放
 # 
@@ -46,4 +47,8 @@ print "sleep",delay;
 last_t=now_t;
 cmd="let num=0x"$3";let num2=0x"$4";let num3=0x"$5";echo sendevent "dev" $num $num2 $num3";
 system(cmd);
-}'
+}' | $BUSYBOX tee play.sh
+
+chmod 777 play.sh
+echo "OK, now you can run ./play.sh to play back touch event"
+
